@@ -1,0 +1,46 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MovementScript : MonoBehaviour
+{
+    //private bool OnGround = false;
+    private int Jumps = 2;
+
+    private Rigidbody2D body;
+    [SerializeReference] private float speed;
+    [SerializeReference] private float JumpForce;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        body = GetComponent<Rigidbody2D>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        body.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * speed, body.velocity.y);
+
+        if (Input.GetKeyDown(KeyCode.Space) && Jumps > 0)
+        {
+            body.velocity = new Vector2(body.velocity.x, JumpForce);
+            Jumps -= 1;
+        }
+        Vector3 characterScale = transform.localScale;
+        if (Input.GetAxis("Horizontal") < 0)
+        {
+            characterScale.x = -0.5f;
+        }
+        if (Input.GetAxis("Horizontal") > 0)
+        {
+            characterScale.x = 0.5f;
+        }
+
+        transform.localScale = characterScale;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Jumps = 2;
+    }
+}

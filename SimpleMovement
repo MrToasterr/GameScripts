@@ -27,6 +27,8 @@ public class MovementScript : MonoBehaviour
             body.velocity = new Vector2(body.velocity.x, JumpForce);
             Jumps -= 1;
         }
+        
+        // Rotates player when pressing a or d
         Vector3 characterScale = transform.localScale;
         if (Input.GetAxis("Horizontal") < 0)
         {

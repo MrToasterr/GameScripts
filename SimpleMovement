@@ -1,3 +1,8 @@
+// Player Movement 
+// with a set amount of jumps (being 2)
+// player needs a BoxCollider2D thats set to trigger (needs to be sticking out the bottom of the player)
+
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

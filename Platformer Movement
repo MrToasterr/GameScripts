@@ -1,0 +1,92 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerMovement : MonoBehaviour
+{
+    //wasn't happy with how it was before i want to try making a different movement script
+    
+    //[DONE]  using a ground check for jumping 
+    //        adding WallJumping (can be added after all the other ones)
+    //        Using particles for when running
+
+    public ParticleSystem dust;
+
+    Rigidbody2D rb_;
+    BoxCollider2D coll;
+
+    [SerializeReference] private LayerMask jumpAbleGround;
+
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private float jumpingForce;
+    public int Jumps = 1;
+    
+
+    
+
+    private void Start()
+    {
+        rb_ = GetComponent<Rigidbody2D>();
+        coll = GetComponent<BoxCollider2D>();
+    }
+    
+
+    private void Update()
+    {
+
+
+        // Movement
+        rb_.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * moveSpeed, rb_.velocity.y);
+        
+
+
+        // Jumping
+        if (Input.GetKeyDown(KeyCode.Space) && Jumps > 0)
+        {
+            //rb_.AddForce = (new Vector2(rb_.velocity.x, jumpingForce),ForceMode2D.Force);
+            rb_.velocity = new Vector2(rb_.velocity.x, jumpingForce);
+            Jumps -= 1;
+            
+            
+           
+        }
+
+        if (isGrounded())
+        {
+            Jumps = 1;
+        }
+
+
+
+        // Jumping higher if you hold the space bar 
+        // don't like how it makes the normal jump lower, but i just wanted to test.
+
+        //if (Input.GetKeyUp(KeyCode.Space)&& rb_.velocity.y > 0)
+        //{
+        //  rb_.velocity = new Vector2(rb_.velocity.x, rb_.velocity.y * .3f);
+        //}
+    }
+
+
+    // GroundCheck
+    private bool isGrounded()
+    {
+        // Making a new box collider with the same shape as the one i'm using for collision
+        // coll.bounds.center and size just means they get the same size and position as the box collider
+        // The 0f is for rotation
+        // vector2.down is the box going a bit down .1f
+        // jumpAbleGround is a layermask, its just a layer you can give to your object
+        // When collided with said layer it returns the IsGrounded as True
+        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpAbleGround);
+    }
+
+
+    // Going to be used for Particles
+    void CreateDust()
+    {
+        dust.Play();
+    }
+
+    
+
+}

@@ -15,6 +15,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask Map;
 
+    bool isFacingRight;
+    float mx = 0f;
+
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpingForce;
     public ParticleSystem dust;
@@ -35,23 +38,14 @@ public class PlayerMovement : MonoBehaviour
 
         // Movement
         rb_.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * moveSpeed, rb_.velocity.y);
+        wallJump();
         
-
-
         // Jumping
         if (Input.GetKeyDown(KeyCode.Space) &&  isGrounded())
         {
-            //rb_.AddForce = (new Vector2(rb_.velocity.x, jumpingForce),ForceMode2D.Force);
             rb_.velocity = new Vector2(rb_.velocity.x, jumpingForce);
             
             
-        }
-        
-        if (touchingWall() && !isGrounded())
-        {
-            
-            
-             Debug.Log("WallJumpAble");
         }
        
         // Jumping higher if you hold the space bar 
@@ -61,6 +55,30 @@ public class PlayerMovement : MonoBehaviour
         //{
         //  rb_.velocity = new Vector2(rb_.velocity.x, rb_.velocity.y * .3f);
         //}
+    }
+    
+    private void FixedUpdate()
+    {
+        // Flips
+        mx = Input.GetAxisRaw("Horizontal");
+        if (mx < 0)
+        {
+            isFacingRight = false;
+            transform.localScale = new Vector2(-.5f, transform.localScale.y);
+        }
+        else if (mx > 0)
+        {
+            isFacingRight = true;
+            transform.localScale = new Vector2(.5f, transform.localScale.y);
+        }
+    }
+    
+    private void wallJump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space)&& touchingWall() && !isGrounded())
+        {
+            Debug.Log("CanWallJump");
+        }
     }
 
 
@@ -77,13 +95,62 @@ public class PlayerMovement : MonoBehaviour
         return Physics2D.OverlapCircle(wallCheck.position, .2f, Map);
     }
 
-
-    // Going to be used for Particles
-    void CreateDust()
-    {
-        dust.Play();
-    }
-
-    
-
 }
+
+
+
+
+
+// Jumping higher if you hold the space bar 
+// don't like how it makes the normal jump lower, but i just wanted to test.
+
+//if (Input.GetKeyUp(KeyCode.Space)&& rb_.velocity.y > 0)
+//{
+//  rb_.velocity = new Vector2(rb_.velocity.x, rb_.velocity.y * .3f);
+//}
+
+
+// Making a new box collider with the same shape as the one i'm using for collision
+// coll.bounds.center and size just means they get the same size and position as the box collider
+// The 0f is for rotation
+// vector2.down is the box going a bit down .1f
+// jumpAbleGround is a layermask, its just a layer you can give to your object
+// When collided with said layer it returns the IsGrounded as True
+
+// return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpAbleGround);
+
+
+
+//public float wallJumpTime = .2f;
+//public float wallSlideSpeed = -.5f;
+//public float wallDistance = .5f;
+//bool isWallSliding = false;
+//bool Something = false;
+//RaycastHit2D wallCheckHit;
+//float jumpTime;
+
+
+
+//if (isFacingRight)
+//{
+//    wallCheckHit = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0f), wallDistance, Map);
+//}
+//else
+//{
+//    wallCheckHit = Physics2D.Raycast(transform.position, new Vector2(-wallDistance, 0f), wallDistance, Map);
+//}
+
+//if (wallCheckHit && !isGrounded() && mx != 0)
+//{
+//    isWallSliding = true;
+//   jumpTime = Time.time + wallJumpTime;
+//}
+//else if (jumpTime < Time.time)
+//{
+//isWallSliding = false;
+//}
+
+//if (isWallSliding)
+//{
+//  rb_.velocity = new Vector2(rb_.velocity.x, Mathf.Clamp(rb_.velocity.y, wallSlideSpeed, float.MaxValue));
+//}

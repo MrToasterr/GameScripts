@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
     float mx = 0f;
     
     public float slideSpeed = 2f;
+    private bool WallSliding = false;
+    
 
 
     [SerializeField] private float moveSpeed;
@@ -41,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
         wallJump();
         Jumping();
-        WallSliding();
+        WallSlide();
     }
     
     private void FixedUpdate()
@@ -61,14 +63,17 @@ public class PlayerMovement : MonoBehaviour
     }
     
  //WallSliding
-    private void WallSliding()
+    private void WallSlide()
     {
         if (Input.GetKey(KeyCode.A) && touchingWall() && !isGrounded() ||
             Input.GetKey(KeyCode.D) && touchingWall() && !isGrounded())
         {
             rb_.velocity = new Vector2(rb_.velocity.x, -slideSpeed);
-        }
-    }
+            WallSliding = true;
+        } else
+        {
+            WallSliding = false;
+        
 
     // Jumping
     private void Jumping()
@@ -84,9 +89,9 @@ public class PlayerMovement : MonoBehaviour
     // WallJumping
     private void wallJump()
     {
-        if (Input.GetKeyDown(KeyCode.Space)&& touchingWall() && !isGrounded())
+        if (Input.GetKeyDown(KeyCode.Space) && WallSliding)
         {
-            Debug.Log("CanWallJump");
+            Debug.Log("WallJump");
             
         }
     }

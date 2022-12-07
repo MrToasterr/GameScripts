@@ -11,18 +11,20 @@ public class PlayerMovement : MonoBehaviour
 
 
     Rigidbody2D rb_;
+    
     [SerializeField] private Transform wallCheck;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask Map;
 
     bool isFacingRight;
     float mx = 0f;
+    
+    public float slideSpeed = 2f;
+
 
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpingForce;
     public ParticleSystem dust;
-    
-
     
 
     private void Start()
@@ -34,27 +36,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-
-
         // Movement
         rb_.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * moveSpeed, rb_.velocity.y);
-        wallJump();
-        
-        // Jumping
-        if (Input.GetKeyDown(KeyCode.Space) &&  isGrounded())
-        {
-            rb_.velocity = new Vector2(rb_.velocity.x, jumpingForce);
-            
-            
-        }
-       
-        // Jumping higher if you hold the space bar 
-        // don't like how it makes the normal jump lower, but i just wanted to test.
 
-        //if (Input.GetKeyUp(KeyCode.Space)&& rb_.velocity.y > 0)
-        //{
-        //  rb_.velocity = new Vector2(rb_.velocity.x, rb_.velocity.y * .3f);
-        //}
+        wallJump();
+        Jumping();
+        WallSliding();
     }
     
     private void FixedUpdate()
@@ -73,27 +60,50 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     
+ //WallSliding
+    private void WallSliding()
+    {
+        if (Input.GetKey(KeyCode.A) && touchingWall() && !isGrounded() ||
+            Input.GetKey(KeyCode.D) && touchingWall() && !isGrounded())
+        {
+            rb_.velocity = new Vector2(rb_.velocity.x, -slideSpeed);
+        }
+    }
+
+    // Jumping
+    private void Jumping()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
+        {
+            
+            rb_.velocity = new Vector2(rb_.velocity.x, jumpingForce);
+        }
+    }
+
+
+    // WallJumping
     private void wallJump()
     {
         if (Input.GetKeyDown(KeyCode.Space)&& touchingWall() && !isGrounded())
         {
             Debug.Log("CanWallJump");
+            
         }
     }
 
 
-    // GroundCheck
+    // GroundCheck & WallCheck
     private bool isGrounded()
-    {
-        // return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpAbleGround);
-        
+    {   
+       
         return Physics2D.OverlapCircle(groundCheck.position, .2f, Map);
     }
-    
+
     private bool touchingWall()
     {
         return Physics2D.OverlapCircle(wallCheck.position, .2f, Map);
     }
+
 
 }
 

@@ -65,14 +65,16 @@ public class PlayerMovement : MonoBehaviour
  //WallSliding
     private void WallSlide()
     {
-        if (Input.GetKey(KeyCode.A) && touchingWall() && !isGrounded() ||
-            Input.GetKey(KeyCode.D) && touchingWall() && !isGrounded())
+        if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) &&touchingWall() && !isGrounded() && rb_.velocity.y < 0)
         {
             rb_.velocity = new Vector2(rb_.velocity.x, -slideSpeed);
-            WallSliding = true;
-        } else
+            isSlide = true;
+        }
+        else
         {
-            WallSliding = false;
+            isSlide = false;
+        }
+    }
         
 
     // Jumping
@@ -89,10 +91,9 @@ public class PlayerMovement : MonoBehaviour
     // WallJumping
     private void wallJump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && WallSliding)
+        if ((isSlide || touchingWall()) && !isGrounded() && Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("WallJump");
-            
+            Debug.Log("wallJump");
         }
     }
 

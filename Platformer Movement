@@ -12,6 +12,9 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody2D rb_;
     
+    // (After using header needs to be a public variable)
+    [Header("Checks Settings")]
+    
     [SerializeField] private Transform wallCheck;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask Map;
@@ -19,13 +22,23 @@ public class PlayerMovement : MonoBehaviour
     bool isFacingRight;
     float mx = 0f;
     
-    public float slideSpeed = 2f;
-    private bool WallSliding = false;
     
-
+    [Header("Sliding Settings")]
+    
+    public float SlideCD = 1.3f;
+    private bool isSlide;
+    public float slideCDcurrent = .0f;
+    public float slideSpeed = 2f;
+    
+    
+    [Header("PlayerMovement Settings")]
 
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpingForce;
+    
+    
+    [Header("Particle Settings")]
+    
     public ParticleSystem dust;
     
 
@@ -74,6 +87,12 @@ public class PlayerMovement : MonoBehaviour
         {
             isSlide = false;
         }
+
+        //if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && touchingWall() && !isGrounded())
+        //{
+        //    rb_.velocity = new Vector2(rb_.velocity.x, -slideSpeed);
+        //    slideCDcurrent = .0f;
+        //}
     }
         
 

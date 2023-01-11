@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     
     //[DONE]  using a ground check for jumping 
     //        adding WallJumping (can be added after all the other ones)
+    //[DONE]  Can't instantly slide after leaving the ground
     //        Using particles for when running
 
 
@@ -36,6 +37,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpingForce;
     
+    [Header("WallJumpingSettings")]
+    
+    [SerializeField] public float wallJumpForce;
+    
     
     [Header("Particle Settings")]
     
@@ -51,9 +56,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        // Movement
-        rb_.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * moveSpeed, rb_.velocity.y);
-
         wallJump();
         Jumping();
         WallSlide();
@@ -61,6 +63,9 @@ public class PlayerMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
+       // Movement
+       rb_.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * moveSpeed, rb_.velocity.y);
+        
         // Flips
         mx = Input.GetAxisRaw("Horizontal");
         if (mx < 0)
@@ -101,8 +106,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
         {
-            
-            rb_.velocity = new Vector2(rb_.velocity.x, jumpingForce);
+             rb_.AddForce(new Vector2(0f, jumpingForce),ForceMode2D.Impulse);            
+            // rb_.velocity = new Vector2(rb_.velocity.x, jumpingForce);
         }
     }
 
